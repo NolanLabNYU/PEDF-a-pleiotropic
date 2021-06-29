@@ -1,0 +1,4 @@
+#Untracked files
+*.DS_Store
+*.Rhistory
+*.RData

@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+<meta name="date" content="2021-02-11" />
+
+<title>The permimp-package</title>
+
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css" data-origin="pandoc">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(title);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    for (var j = 0; j < rules.length; j++) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+<style type="text/css">
+  p.abstract{
+    text-align: center;
+    font-weight: bold;
+  }
+  div.abstract{
+    margin: auto;
+    width: 90%;
+  }
+</style>
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">The permimp-package</h1>
+<h4 class="author">Dries Debeer</h4>
+<address class="author_afil">
+University of Zurich<br><h4 class="date">2021-02-11</h4>
+<div class="abstract">
+<p class="abstract">Abstract</p>
+The <code>permimp</code>-package is developed to replace the Conditional Permutation Importance (CPI) computation by the <code>varimp</code>-function(s) of the <code>party</code>-package. <code>permimp</code> applies a different implementation for the CPI, in order to mitigate some issues related to the implementation of the CPI in the <code>party</code>-package. In addition, the CPI is also available for random forests grown by the <code>randomForest</code>-package. Finally, the package includes some plotting options.
+</div>
+
+
+
+<hr />
+<div id="introduction" class="section level1">
+<h1>Introduction</h1>
+<p>Although originally designed for prediction purposes, Random forests <span class="citation">Breiman (2001)</span> have become a popular tool to assess the importance of predictors. Several methods and measures have been proposed, one of the most popular ones is the <em>Permutation Importance</em> <span class="citation">Breiman (2001)</span>, originally referred to as the Mean Decrease in Accuracy. Inspired by the contrast between the <em>unconditional</em> zero-order correlation between predictor and outcome, and the <em>conditional</em> standardized regression coefficient in multiple linear regression, <span class="citation">Strobl et al. (2008)</span> argued that in some cases the importance of a predictor, conditionally on (all) other predictors, may be of higher interest than the <em>unconditional</em> importance. Therefore, they proposed the <em>Conditional Permutation Importance</em>, which introduces a conditional permutation scheme that is based on the dependence between the predictors.</p>
+<p>The <code>permimp</code>-package presents a different implementation of this <em>Conditional Permutation Importance</em>. Unlike the original implementation (available in the <code>party</code> R-package of <span class="citation">Hothorn, Hornik, and Zeileis (2006)</span>), <code>permimp</code> can, in addition to random forests that were grown according to the unbiased recursive partitioning (cf. <code>cforests</code>; <span class="citation">Hothorn, Hornik, and Zeileis (2006)</span>), also deal with with random forests that were grown using the <code>randomForest</code>-package <span class="citation">Liaw and Wiener (2002)</span>, which applies the original tree growing algorithm based on impurity reduction <span class="citation">Breiman (2001)</span>. (In principle, the <code>permimp</code> can be extended to random forests grown by other packages, under the condition that tree-wise predictions are possible and OOB-information as well as the split points are available per tree.) We argue that the <code>permimp</code>-package can be seen as a replacement for the <code>varimp</code>-functions of the <code>party</code> package in R.</p>
+<p>This vignette has two main parts. The first part is tutorial-like and demonstrates functionality of the <code>permimp</code>-package (by also comparing it to original <code>party::varimp</code>-functions. The second part is more theoretical and explains the how and the why of the new <em>Conditional Permutation Importance</em>-implementation.</p>
+<p><br></p>
+</div>
+<div id="part-i-permimp-tutorial" class="section level1">
+<h1>Part I: <code>permimp</code>-tutorial</h1>
+<div id="a.-the-permimp-function" class="section level2">
+<h2>A. The <code>permimp</code>-function</h2>
+<p>The <code>permimp</code>-function replaces all the <code>party::varimp</code>-functions (<code>varimp</code>, <code>varimpAUC</code>, <code>varimpsurv</code>). To apply <code>permimp</code>-function, one needs a fitted random forest. Within this tutorial we will mainly focus on random forests-objects as obtained by the <code>party::cforest</code>-function (i.e., S4-objects of class <code>&quot;RandomForest&quot;</code>). As an example we will use the (cleaned) <code>airquality</code>-data set to fit random forest with 50 trees:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1"><span class="kw">library</span>(<span class="st">&quot;party&quot;</span>, <span class="dt">quietly =</span> <span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb1-2" title="2"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb1-3" title="3"><span class="co">#&gt; Attaching package: &#39;zoo&#39;</span></a>
+<a class="sourceLine" id="cb1-4" title="4"><span class="co">#&gt; The following objects are masked from &#39;package:base&#39;:</span></a>
+<a class="sourceLine" id="cb1-5" title="5"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb1-6" title="6"><span class="co">#&gt;     as.Date, as.Date.numeric</span></a>
+<a class="sourceLine" id="cb1-7" title="7"><span class="kw">library</span>(<span class="st">&quot;permimp&quot;</span>)</a>
+<a class="sourceLine" id="cb1-8" title="8"><span class="kw">set.seed</span>(<span class="dv">542863</span>)</a>
+<a class="sourceLine" id="cb1-9" title="9">airq &lt;-<span class="st"> </span><span class="kw">subset</span>(airquality, <span class="op">!</span>(<span class="kw">is.na</span>(Ozone) <span class="op">|</span><span class="st"> </span><span class="kw">is.na</span>(Solar.R)))</a>
+<a class="sourceLine" id="cb1-10" title="10">cfAirq50 &lt;-<span class="st"> </span><span class="kw">cforest</span>(Ozone <span class="op">~</span><span class="st"> </span>., <span class="dt">data =</span> airq,</a>
+<a class="sourceLine" id="cb1-11" title="11">                    <span class="dt">control =</span> <span class="kw">cforest_unbiased</span>(<span class="dt">mtry =</span> <span class="dv">2</span>, <span class="dt">ntree =</span> <span class="dv">50</span>,</a>
+<a class="sourceLine" id="cb1-12" title="12">                                              <span class="dt">minbucket =</span> <span class="dv">5</span>, </a>
+<a class="sourceLine" id="cb1-13" title="13">                                              <span class="dt">minsplit =</span> <span class="dv">10</span>))</a></code></pre></div>
+<div id="a.1.-new-conditional-permutation-importance" class="section level3">
+<h3>A.1. New Conditional Permutation Importance</h3>
+<p>Let’s start by comparing the <code>permimp</code> and the <code>varimp</code> function for the conditional permutation importance.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" title="1"><span class="kw">system.time</span>(CPI_permimp &lt;-<span class="st"> </span><span class="kw">permimp</span>(cfAirq50, <span class="dt">conditional =</span> <span class="ot">TRUE</span>, <span class="dt">progressBar =</span> <span class="ot">FALSE</span>))</a>
+<a class="sourceLine" id="cb2-2" title="2"><span class="co">#&gt;    user  system elapsed </span></a>
+<a class="sourceLine" id="cb2-3" title="3"><span class="co">#&gt;    0.32    0.02    0.34</span></a>
+<a class="sourceLine" id="cb2-4" title="4"><span class="kw">system.time</span>(CPI_varimp &lt;-<span class="st"> </span><span class="kw">varimp</span>(cfAirq50, <span class="dt">conditional =</span> <span class="ot">TRUE</span>))</a>
+<a class="sourceLine" id="cb2-5" title="5"><span class="co">#&gt;    user  system elapsed </span></a>
+<a class="sourceLine" id="cb2-6" title="6"><span class="co">#&gt;    2.31    0.02    2.34</span></a>
+<a class="sourceLine" id="cb2-7" title="7">CPI_permimp</a>
+<a class="sourceLine" id="cb2-8" title="8"><span class="co">#&gt;    Solar.R       Wind       Temp      Month        Day </span></a>
+<a class="sourceLine" id="cb2-9" title="9"><span class="co">#&gt;  83.736656 209.786231 422.671385   1.820496  -7.668462</span></a>
+<a class="sourceLine" id="cb2-10" title="10">CPI_varimp</a>
+<a class="sourceLine" id="cb2-11" title="11"><span class="co">#&gt;    Solar.R       Wind       Temp      Month        Day </span></a>
+<a class="sourceLine" id="cb2-12" title="12"><span class="co">#&gt;  25.147792 114.250197 220.080351   1.952776  -1.265111</span></a></code></pre></div>
+<p>Three differences can easily be spotted:</p>
+<ul>
+<li><code>perminp</code> has a <code>progressBar</code>-argument. The default is <code>progressBar = TRUE</code><a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a></li>
+<li><code>permimp</code> is faster than <code>varimp</code>.</li>
+<li>The results are different.</li>
+</ul>
+</div>
+<div id="a.2.-different-results" class="section level3">
+<h3>A.2. Different results?</h3>
+<p>Why are the results different?</p>
+<p>There are two main reasons. First, <code>permimp</code> uses a different default <code>threshold</code>-value: <code>permimp</code> uses <code>threshold = .95</code> while <code>varimp</code> uses <code>threshold = 0.2</code>. Check <code>?permimp</code> and <code>?varimp</code>. There is a good reason for using a higher default threshold value.</p>
+<p>When using equal <code>threshold</code>-values…</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" title="1">CPI_permimp &lt;-<span class="st"> </span><span class="kw">permimp</span>(cfAirq50, <span class="dt">conditional =</span> <span class="ot">TRUE</span>, <span class="dt">threshold =</span> <span class="fl">.2</span>, <span class="dt">progressBar =</span> <span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb3-2" title="2">CPI_permimp</a>
+<a class="sourceLine" id="cb3-3" title="3"><span class="co">#&gt;     Solar.R        Wind        Temp       Month         Day </span></a>
+<a class="sourceLine" id="cb3-4" title="4"><span class="co">#&gt;  26.9974775 122.2781497 204.0238116  -3.1201748   0.8442593</span></a>
+<a class="sourceLine" id="cb3-5" title="5">CPI_varimp</a>
+<a class="sourceLine" id="cb3-6" title="6"><span class="co">#&gt;    Solar.R       Wind       Temp      Month        Day </span></a>
+<a class="sourceLine" id="cb3-7" title="7"><span class="co">#&gt;  25.147792 114.250197 220.080351   1.952776  -1.265111</span></a></code></pre></div>
+<p>The results are more similar, but not quite identical. The remaining differences are explained by the second reason: the implementation of <code>permimp</code> differs from the <code>varimp</code>-implementation. Using a higher <code>threshold</code>-value makes the differences between the two implementations more pronounced.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" title="1">CPI_varimp &lt;-<span class="st"> </span><span class="kw">varimp</span>(cfAirq50, <span class="dt">conditional =</span> <span class="ot">TRUE</span>, <span class="dt">threshold =</span> <span class="fl">.95</span>)</a>
+<a class="sourceLine" id="cb4-2" title="2">CPI_permimp</a>
+<a class="sourceLine" id="cb4-3" title="3"><span class="co">#&gt;     Solar.R        Wind        Temp       Month         Day </span></a>
+<a class="sourceLine" id="cb4-4" title="4"><span class="co">#&gt;  26.9974775 122.2781497 204.0238116  -3.1201748   0.8442593</span></a>
+<a class="sourceLine" id="cb4-5" title="5">CPI_varimp</a>
+<a class="sourceLine" id="cb4-6" title="6"><span class="co">#&gt;    Solar.R       Wind       Temp      Month        Day </span></a>
+<a class="sourceLine" id="cb4-7" title="7"><span class="co">#&gt;  36.758973 198.610059 257.916926  -2.537016  -2.530303</span></a></code></pre></div>
+<p>The differences between the two implementations (and why we believe the new implementation is more attractive), is explained in the second part of this document, as well as in this manuscript: <span class="citation">Debeer and Strobl (2020)</span>.</p>
+</div>
+<div id="a.3.-backward-compatible-with-party-when-asparty-true" class="section level3">
+<h3>A.3. Backward Compatible with <code>party</code> when: <code>asParty = TRUE</code></h3>
+<p>By specifying <code>asParty = TRUE</code>, the <code>permimp</code>-function can be made backward compatible with the <code>party::varimp</code>-function. But <code>permimp</code> is a bit faster. To get exactly the same results, the random seeds should be exactly the same.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" title="1"><span class="kw">set.seed</span>(<span class="dv">542863</span>)</a>
+<a class="sourceLine" id="cb5-2" title="2"><span class="kw">system.time</span>(CPI_asParty &lt;-<span class="st"> </span><span class="kw">permimp</span>(cfAirq50, <span class="dt">conditional =</span> <span class="ot">TRUE</span>, <span class="dt">asParty =</span> <span class="ot">TRUE</span>, <span class="dt">progressBar =</span> <span class="ot">FALSE</span>))</a>
+<a class="sourceLine" id="cb5-3" title="3"><span class="co">#&gt;    user  system elapsed </span></a>
+<a class="sourceLine" id="cb5-4" title="4"><span class="co">#&gt;    0.45    0.00    0.46</span></a>
+<a class="sourceLine" id="cb5-5" title="5"><span class="kw">set.seed</span>(<span class="dv">542863</span>)</a>
+<a class="sourceLine" id="cb5-6" title="6"><span class="kw">system.time</span>(CPI_varimp &lt;-<span class="st"> </span><span class="kw">varimp</span>(cfAirq50, <span class="dt">conditional =</span> <span class="ot">TRUE</span>))</a>
+<a class="sourceLine" id="cb5-7" title="7"><span class="co">#&gt;    user  system elapsed </span></a>
+<a class="sourceLine" id="cb5-8" title="8"><span class="co">#&gt;    2.23    0.00    2.24</span></a>
+<a class="sourceLine" id="cb5-9" title="9">CPI_asParty</a>
+<a class="sourceLine" id="cb5-10" title="10"><span class="co">#&gt;    Solar.R       Wind       Temp      Month        Day </span></a>
+<a class="sourceLine" id="cb5-11" title="11"><span class="co">#&gt;  36.364271 136.732886 200.620728   3.179600   1.360632</span></a>
+<a class="sourceLine" id="cb5-12" title="12">CPI_varimp</a>
+<a class="sourceLine" id="cb5-13" title="13"><span class="co">#&gt;    Solar.R       Wind       Temp      Month        Day </span></a>
+<a class="sourceLine" id="cb5-14" title="14"><span class="co">#&gt;  36.364271 136.732886 200.620728   3.179600   1.360632</span></a></code></pre></div>
+<p>Note that with <code>asParty = TRUE</code> the default <code>threshold</code>-value is automatically set back to <code>0.2</code>.</p>
+</div>
+<div id="a.4.-different-output-varimp-object" class="section level3">
+<h3>A.4. Different Output: <code>VarImp</code>-object</h3>
+<p>A less obvious difference between <code>permimp</code> and <code>varimp</code> is the object that it returns. <code>permimp</code> returns an S3-class object: <code>VarImp</code>, rather than a named numerical vector. A <code>VarImp</code> object is a named list with four elements:</p>
+<ol style="list-style-type: decimal">
+<li><code>$values</code>: holds the computed variable importance values.</li>
+<li><code>$perTree</code>: holds the variable importance values per tree (averaged over the permutations when <code>nperm &gt; 1</code>).</li>
+<li><code>$type</code>: the type of variable importance.</li>
+<li><code>$info</code>: other relevant information about the variable importance, such as the used <code>threshold</code>.</li>
+</ol>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" title="1"><span class="co">## varimp returns a named numerical vector.</span></a>
+<a class="sourceLine" id="cb6-2" title="2"><span class="kw">str</span>(CPI_varimp)</a>
+<a class="sourceLine" id="cb6-3" title="3"><span class="co">#&gt;  Named num [1:5] 36.36 136.73 200.62 3.18 1.36</span></a>
+<a class="sourceLine" id="cb6-4" title="4"><span class="co">#&gt;  - attr(*, &quot;names&quot;)= chr [1:5] &quot;Solar.R&quot; &quot;Wind&quot; &quot;Temp&quot; &quot;Month&quot; ...</span></a>
+<a class="sourceLine" id="cb6-5" title="5"></a>
+<a class="sourceLine" id="cb6-6" title="6"><span class="co">## permimp returns a VarImp-object.</span></a>
+<a class="sourceLine" id="cb6-7" title="7"><span class="kw">str</span>(CPI_asParty)</a>
+<a class="sourceLine" id="cb6-8" title="8"><span class="co">#&gt; List of 4</span></a>
+<a class="sourceLine" id="cb6-9" title="9"><span class="co">#&gt;  $ values : Named num [1:5] 36.36 136.73 200.62 3.18 1.36</span></a>
+<a class="sourceLine" id="cb6-10" title="10"><span class="co">#&gt;   ..- attr(*, &quot;names&quot;)= chr [1:5] &quot;Solar.R&quot; &quot;Wind&quot; &quot;Temp&quot; &quot;Month&quot; ...</span></a>
+<a class="sourceLine" id="cb6-11" title="11"><span class="co">#&gt;  $ perTree:&#39;data.frame&#39;: 50 obs. of  5 variables:</span></a>
+<a class="sourceLine" id="cb6-12" title="12"><span class="co">#&gt;   ..$ Solar.R: num [1:50] 117.35 0 1.81 0 58.22 ...</span></a>
+<a class="sourceLine" id="cb6-13" title="13"><span class="co">#&gt;   ..$ Wind   : num [1:50] 118.8 430.7 141.5 171 78.1 ...</span></a>
+<a class="sourceLine" id="cb6-14" title="14"><span class="co">#&gt;   ..$ Temp   : num [1:50] 374 433 118 -1 175 ...</span></a>
+<a class="sourceLine" id="cb6-15" title="15"><span class="co">#&gt;   ..$ Month  : num [1:50] -4.59 0 34.93 -11.96 -11.9 ...</span></a>
+<a class="sourceLine" id="cb6-16" title="16"><span class="co">#&gt;   ..$ Day    : num [1:50] 0 18.93 0 7.18 0 ...</span></a>
+<a class="sourceLine" id="cb6-17" title="17"><span class="co">#&gt;  $ type   : chr &quot;Conditional Permutation&quot;</span></a>
+<a class="sourceLine" id="cb6-18" title="18"><span class="co">#&gt;  $ info   :List of 4</span></a>
+<a class="sourceLine" id="cb6-19" title="19"><span class="co">#&gt;   ..$ threshold   : num 0.2</span></a>
+<a class="sourceLine" id="cb6-20" title="20"><span class="co">#&gt;   ..$ conditioning: chr &quot;as party&quot;</span></a>
+<a class="sourceLine" id="cb6-21" title="21"><span class="co">#&gt;   ..$ outcomeType : chr &quot;regression&quot;</span></a>
+<a class="sourceLine" id="cb6-22" title="22"><span class="co">#&gt;   ..$ errorType   : chr &quot;MSE&quot;</span></a>
+<a class="sourceLine" id="cb6-23" title="23"><span class="co">#&gt;  - attr(*, &quot;class&quot;)= chr &quot;VarImp&quot;</span></a>
+<a class="sourceLine" id="cb6-24" title="24"></a>
+<a class="sourceLine" id="cb6-25" title="25"><span class="co">## the results of permimp(asParty = TRUE) and varimp() are exactly the same.</span></a>
+<a class="sourceLine" id="cb6-26" title="26"><span class="kw">all</span>(CPI_asParty<span class="op">$</span>values <span class="op">==</span><span class="st"> </span>CPI_varimp)</a>
+<a class="sourceLine" id="cb6-27" title="27"><span class="co">#&gt; [1] TRUE</span></a></code></pre></div>
+<p>An advantage of the <code>VarImp</code>-object, is that the <code>$perTree</code>-values can be used to inspect the distribution of the importance values across the trees in a forest. For instance, the plotting function (demonstrated below) can be used to visualize this distribution of per tree importance values.</p>
+</div>
+<div id="a.5.-unconditional-permutation-importance-permimp-varimp" class="section level3">
+<h3>A.5. Unconditional Permutation Importance: <code>permimp</code> = <code>varimp</code></h3>
+<p>Of course, there is also the option to compute the unconditional permutation importance. Both using the original and the split wise permutation algorithm. Here, there are no differences between <code>permimp</code> and <code>varimp</code>. That is, <code>permimp</code> simply uses the <code>party</code> <code>varimp</code> code, making the <code>asParty</code> argument redundant in this case. Note, however, that <code>permimp</code> still returns a <code>VarImp-object</code>.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" title="1"><span class="co">## Original Unconditional Permutation Importance</span></a>
+<a class="sourceLine" id="cb7-2" title="2"><span class="kw">set.seed</span>(<span class="dv">542863</span>)</a>
+<a class="sourceLine" id="cb7-3" title="3">PI_permimp &lt;-<span class="st"> </span><span class="kw">permimp</span>(cfAirq50, <span class="dt">progressBar =</span> <span class="ot">FALSE</span>, <span class="dt">pre1.0_0 =</span> <span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb7-4" title="4"><span class="kw">set.seed</span>(<span class="dv">542863</span>)</a>
+<a class="sourceLine" id="cb7-5" title="5">PI_varimp &lt;-<span class="st"> </span><span class="kw">varimp</span>(cfAirq50, <span class="dt">pre1.0_0 =</span> <span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb7-6" title="6">PI_permimp</a>
+<a class="sourceLine" id="cb7-7" title="7"><span class="co">#&gt;      Solar.R         Wind         Temp        Month          Day </span></a>
+<a class="sourceLine" id="cb7-8" title="8"><span class="co">#&gt; 104.19612764 345.36320352 582.09815801  18.04859049   0.01880503</span></a>
+<a class="sourceLine" id="cb7-9" title="9">PI_varimp</a>
+<a class="sourceLine" id="cb7-10" title="10"><span class="co">#&gt;      Solar.R         Wind         Temp        Month          Day </span></a>
+<a class="sourceLine" id="cb7-11" title="11"><span class="co">#&gt; 104.19612764 345.36320352 582.09815801  18.04859049   0.01880503</span></a>
+<a class="sourceLine" id="cb7-12" title="12"></a>
+<a class="sourceLine" id="cb7-13" title="13"><span class="co">## Splitwise Unconditional Permutation Importance</span></a>
+<a class="sourceLine" id="cb7-14" title="14"><span class="kw">set.seed</span>(<span class="dv">542863</span>)</a>
+<a class="sourceLine" id="cb7-15" title="15">PI_permimp2 &lt;-<span class="st"> </span><span class="kw">permimp</span>(cfAirq50, <span class="dt">progressBar =</span> <span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb7-16" title="16"><span class="kw">set.seed</span>(<span class="dv">542863</span>)</a>
+<a class="sourceLine" id="cb7-17" title="17">PI_varimp2 &lt;-<span class="st"> </span><span class="kw">varimp</span>(cfAirq50)</a>
+<a class="sourceLine" id="cb7-18" title="18">PI_permimp2</a>
+<a class="sourceLine" id="cb7-19" title="19"><span class="co">#&gt;    Solar.R       Wind       Temp      Month        Day </span></a>
+<a class="sourceLine" id="cb7-20" title="20"><span class="co">#&gt;  81.935250 451.459770 580.918085  21.851431  -4.613963</span></a>
+<a class="sourceLine" id="cb7-21" title="21">PI_varimp2</a>
+<a class="sourceLine" id="cb7-22" title="22"><span class="co">#&gt;    Solar.R       Wind       Temp      Month        Day </span></a>
+<a class="sourceLine" id="cb7-23" title="23"><span class="co">#&gt;  81.935250 451.459770 580.918085  21.851431  -4.613963</span></a></code></pre></div>
+<p>For more detailed information check <code>?permimp</code>.</p>
+</div>
+</div>
+<div id="b.-methods-for-varimp-objects" class="section level2">
+<h2>B. Methods for <code>VarImp</code>-objects</h2>
+<div id="b.1.-plot" class="section level3">
+<h3>B.1. <code>plot</code></h3>
+<p>Visualizing the variable importance values (as a <code>VarImp</code>-object) is easy using the <code>plot</code> method. Its main features include:</p>
+<ul>
+<li>Four plot types:`type = c(“bar”, “box”, “dot”, “rank”).</li>
+<li>Predictors automatically ordered according to importance value (high to low). Setting the argument <code>sort = FALSE</code> renders the original order (cf. the <code>cforest</code> call).</li>
+<li>with argument <code>horizontal = TRUE</code> horizontal plots are made.</li>
+<li>Optional visualization of the <code>$perTree</code> importance value distribution with the <code>interval</code> argument. With <code>type = &quot;box&quot;</code>, the distribution of the <code>$perTree</code>-values is automatically visualized.<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a></li>
+</ul>
+<p>We would suggest to only use the visualization of the <code>$perTree</code> importance value distribution, when there are enough trees (&gt;= 500) in the random forest. Therefore, we first fit a new, bigger random forest, and compute the permutation importance.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" title="1"><span class="co">## fit a new forest with 500 trees</span></a>
+<a class="sourceLine" id="cb8-2" title="2"><span class="kw">set.seed</span>(<span class="dv">542863</span>)</a>
+<a class="sourceLine" id="cb8-3" title="3">cfAirq500 &lt;-<span class="st"> </span><span class="kw">cforest</span>(Ozone <span class="op">~</span><span class="st"> </span>., <span class="dt">data =</span> airq,</a>
+<a class="sourceLine" id="cb8-4" title="4">                     <span class="dt">control =</span> <span class="kw">cforest_unbiased</span>(<span class="dt">mtry =</span> <span class="dv">2</span>, <span class="dt">ntree =</span> <span class="dv">500</span>,</a>
+<a class="sourceLine" id="cb8-5" title="5">                                              <span class="dt">minbucket =</span> <span class="dv">5</span>, </a>
+<a class="sourceLine" id="cb8-6" title="6">                                              <span class="dt">minsplit =</span> <span class="dv">10</span>))</a>
+<a class="sourceLine" id="cb8-7" title="7"></a>
+<a class="sourceLine" id="cb8-8" title="8"><span class="co">## compute permutation importance</span></a>
+<a class="sourceLine" id="cb8-9" title="9">PI_permimp500 &lt;-<span class="st"> </span><span class="kw">permimp</span>(cfAirq500, <span class="dt">progressBar =</span> <span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb8-10" title="10"></a>
+<a class="sourceLine" id="cb8-11" title="11"><span class="co">## different plots, all easy to make</span></a>
+<a class="sourceLine" id="cb8-12" title="12"><span class="co">## barplot</span></a>
+<a class="sourceLine" id="cb8-13" title="13"><span class="kw">plot</span>(PI_permimp500, <span class="dt">type =</span> <span class="st">&quot;bar&quot;</span>)</a></code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" title="1"></a>
+<a class="sourceLine" id="cb9-2" title="2"><span class="co">## barplot with visualization of the distribution: an</span></a>
+<a class="sourceLine" id="cb9-3" title="3"><span class="co">## interval between the .25 and .75 quantiles of the per </span></a>
+<a class="sourceLine" id="cb9-4" title="4"><span class="co">## Tree values is added to the plot</span></a>
+<a class="sourceLine" id="cb9-5" title="5"><span class="kw">plot</span>(PI_permimp500, <span class="dt">type =</span> <span class="st">&quot;bar&quot;</span>, <span class="dt">interval =</span> <span class="st">&quot;quantile&quot;</span>)</a></code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" title="1"></a>
+<a class="sourceLine" id="cb10-2" title="2"><span class="co">## horizontal boxplot</span></a>
+<a class="sourceLine" id="cb10-3" title="3"><span class="kw">plot</span>(PI_permimp500, <span class="dt">type =</span> <span class="st">&quot;box&quot;</span>, <span class="dt">horizontal =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" title="1"></a>
+<a class="sourceLine" id="cb11-2" title="2"><span class="co">## unsorted dotplot</span></a>
+<a class="sourceLine" id="cb11-3" title="3"><span class="kw">plot</span>(PI_permimp500, <span class="dt">type =</span> <span class="st">&quot;dot&quot;</span>, <span class="dt">sort =</span> <span class="ot">FALSE</span>, </a>
+<a class="sourceLine" id="cb11-4" title="4">     <span class="dt">interval =</span> <span class="st">&quot;quantile&quot;</span>)</a></code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
+<div id="additionally-you-can" class="section level5">
+<h5>Additionally you can:</h5>
+<ul>
+<li>Use your favorite colors with arguments <code>col</code> and <code>intervaColor</code>.</li>
+<li>Use different a quantile interval with <code>intervalProbs = c(&lt;lower_quantile&gt;, &lt;upper_quantile&gt;)</code>.<a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a></li>
+<li>Choose your own title the title with <code>main</code></li>
+<li>Modify the margin with <code>margin</code>.</li>
+</ul>
+</div>
+<div id="although-we-would-advise-against-this-in-most-situations-you-can-also" class="section level4">
+<h4>Although we would advise against this in most situations, you can also:</h4>
+<ul>
+<li>Plot only the <code>&lt;integer value&gt;</code> predictors with the highest values with <code>nVar = &lt;integer value&gt;</code>.<br />
+</li>
+<li>Visualize the distribution using the standard deviation of the <code>perTree</code> values with <code>interval = &quot;sd&quot;</code>. This is almost always a very bad idea, because it falsely suggests that the distribution is symmetric. Please don’t use this option.</li>
+</ul>
+<p>For more detailed information check <code>?plot.VarImp</code>.</p>
+</div>
+</div>
+<div id="b.2.-other-varimp-methods" class="section level3">
+<h3>B.2. Other <code>VarImp</code>-methods</h3>
+<p>(Currently) there are three more <code>VarImp</code>-methods:</p>
+<ul>
+<li><code>print</code>: prints the <code>$values</code></li>
+<li><code>ranks</code>: prints the (reverse) rankings of the <code>$values</code></li>
+<li><code>subset</code>: creates a subset that is itself also a<code>VarImp</code>-object. Only to be used in very limited settings, and when you know what you are doing.</li>
+</ul>
+<p>Other related functions are:</p>
+<ul>
+<li><code>as.VarImp</code>: creates a <code>VarImp</code>-object from a <code>matrix</code>/<code>data.frame</code> of <code>perTree</code> values, or from a numerical vector of importance values.</li>
+<li><code>is.VarImp</code>: checks if an object is of the <code>VarImp</code>-class.</li>
+</ul>
+</div>
+</div>
+<div id="c.-permimp-applied-to-randomforest-objects" class="section level2">
+<h2>C. <code>permimp</code> applied to <code>randomForest</code>-objects</h2>
+<p>As mentioned in the introduction, the <code>permimp</code>-package can also deal with with random forests that were grown using the <code>randomForest</code>-package <span class="citation">Liaw and Wiener (2002)</span>, which applies the original tree growing algorithm based on impurity reduction <span class="citation">Breiman (2001)</span>.</p>
+<p>Let’s first grow a (small) forest.</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" title="1"><span class="kw">library</span>(<span class="st">&quot;randomForest&quot;</span>, <span class="dt">quietly =</span> <span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb12-2" title="2"><span class="co">#&gt; randomForest 4.6-14</span></a>
+<a class="sourceLine" id="cb12-3" title="3"><span class="co">#&gt; Type rfNews() to see new features/changes/bug fixes.</span></a>
+<a class="sourceLine" id="cb12-4" title="4"><span class="kw">set.seed</span>(<span class="dv">542863</span>)</a>
+<a class="sourceLine" id="cb12-5" title="5">rfAirq50 &lt;-<span class="st"> </span><span class="kw">randomForest</span>(Ozone <span class="op">~</span><span class="st"> </span>., <span class="dt">data =</span> airq, <span class="dt">mtry =</span> <span class="dv">2</span>, <span class="dt">replace =</span> <span class="ot">FALSE</span>, </a>
+<a class="sourceLine" id="cb12-6" title="6">                         <span class="dt">nodesize =</span> <span class="dv">7</span>, <span class="dt">keep.forest =</span> <span class="ot">TRUE</span>, <span class="dt">keep.inbag =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
+<p>Note that <code>keep.forest = TRUE</code> and <code>keep.inbag = TRUE</code>. The <code>permimp</code>-function requires information about which observations were in-bag (IB) or out-of-bag (OOB), as well as information about the split points in each tree. Without this information, the (Conditional) Permutation Importance algorithm cannot be executed.</p>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" title="1">CPI_permimpRF &lt;-<span class="st"> </span><span class="kw">permimp</span>(rfAirq50, <span class="dt">conditional =</span> <span class="ot">TRUE</span>, <span class="dt">progressBar =</span> <span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb13-2" title="2"><span class="kw">plot</span>(CPI_permimpRF, <span class="dt">horizontal =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
+<p>When calling <code>permimp</code> for a <code>randomForest</code> object form the <code>randomForest</code>-package, a menu is prompted that ask whether you are sure that the data-objects used to fit the random forest have not changed. This is because the <code>permimp</code> computations rely on those data-objects, and automatically search for them in the environment. If these data-objects have changed, the <code>permimp</code> results can be distorted.</p>
+<hr />
+</div>
+</div>
+<div id="part-ii-new-conditional-permutation-implementation" class="section level1">
+<h1>Part II: New Conditional Permutation Implementation</h1>
+<p>This part explains the new implementation of the conditional permutation importance, and discusses the differences with the original implementation in <code>party</code>, as described by <span class="citation">Strobl et al. (2008)</span>. First the the idea behind the conditional implementation is briefly recapitulated, followed by a discussion of the original implementation. Then the new implementation is explained, and the main differences with the original are emphasized. Finally, some practical implications of the new implementation are given, and the interpretation and possible use of the <code>threshold</code> value are discussed.</p>
+<div id="a.-recapitulation-conditional-permutation-importance." class="section level2">
+<h2>A. Recapitulation: Conditional Permutation Importance.</h2>
+<p>A researcher may be interested in whether a predictor <span class="math inline">\(X\)</span> and the outcome <span class="math inline">\(Y\)</span> are independent. The “null-hypothesis” is then <span class="math inline">\(P(Y | X) = P(Y)\)</span>. This corresponds with the unconditional permutation importance. When <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> are indeed independent, permuting <span class="math inline">\(X\)</span> should not significantly change the prediction accuracy of the tree/forest. The expected permutation importance value is zero.</p>
+<p>However, a researcher may also be interested in the conditional independence of <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span>, conditionally on the values of some <em>other predictors</em> <span class="math inline">\(Z\)</span>. The “null-hypothesis” is then <span class="math inline">\(P(Y | X, Z) = P(Y | Z)\)</span>. Rather than “completely” permuting the <span class="math inline">\(X\)</span> values, the <span class="math inline">\(X\)</span> values can be permuted conditionally, given their corresponding <span class="math inline">\(Z\)</span> values. This corresponds to the conditional permutation scheme. When <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> are conditionally independent, ideally, a conditional importance measure should be zero.</p>
+<p>If <span class="math inline">\(X\)</span> and <span class="math inline">\(Z\)</span> are independent, both permutation schemes will give the same results. Or in practice, similar importance values. Yet a dependence between <span class="math inline">\(X\)</span> and <span class="math inline">\(Z\)</span> will result in differences between the unconditional and the conditional permutation schemes, and the corresponding importance values.</p>
+<p><span class="citation">Strobl et al. (2008)</span> proposed to specify a partitioning (grid) of the predictor space based on <span class="math inline">\(Z\)</span> (for each tree), in order to (conditionally) permute the values of <span class="math inline">\(X\)</span> withing each partition (i.e., cell in the grid). According to <span class="citation">Strobl et al. (2008)</span> this partitioning should (1) be applicable to variables of all types; (2) be as parsimonious as possible, but (3) be also computationally feasible. Therefore they suggested to define the partitioning grid for each tree by means of the partitions of the predictor space induced by that tree. More precisely, using all the split points for <span class="math inline">\(Z\)</span> in the tree, <span class="math inline">\(Z\)</span> is discretized and the complete predictor space is partitioned using the discretized <span class="math inline">\(Z\)</span>.</p>
+<p>Note that this partitioning does not correspond with the recursive partitioning of a tree. In a tree only the top node splits the complete predictor space, all the following splits are conditional on the parent nodes. In contrast, for the conditional permutation grid, all the split points split the complete predictor space, which leads to a more fine-grained grid.</p>
+<p>In practice, the number of observations is finite. In situation with a relatively low number of observations, the grid for the conditional permutation may become to fine grained, making conditionally permuting practically infeasible. Therefore, the selection of <span class="math inline">\(Z\)</span> (the predictors to condition on) is not a sinecure.</p>
+</div>
+<div id="b.-original-implementation-partyvarimp" class="section level2">
+<h2>B. Original Implementation (<code>party::varimp</code>)</h2>
+<p>In their original implementation (cf, <code>party::varimp</code>), <span class="citation">Strobl et al. (2008)</span> argued to only include those variables in <span class="math inline">\(Z\)</span> whose empirical correlation with <span class="math inline">\(X\)</span> exceeds a certain moderate threshold. For continuous variables the Pearson correlation could be used, but for the general case they proposed to use the conditional inference framework promoted by <span class="citation">Hothorn, Hornik, and Zeileis (2006)</span>. Applying this framework provides <em>p</em>-values, which have the advantage that they are comparable for variables of all types, and that they can serve as an intuitive and objective means of selecting the variables Z to condition on.</p>
+<p>The original implementation can be described as follows:</p>
+<blockquote>
+<p>For every predictor <span class="math inline">\(X\)</span></p>
+<ol style="list-style-type: decimal">
+<li>Test which other predictors are related to <span class="math inline">\(X\)</span>, applying the conditional inference framework <span class="citation">(Hothorn et al. 2006)</span> using <strong>the full data/training set</strong>.</li>
+<li>Only include those other predictors in <span class="math inline">\(Z\)</span> for which the <span class="math inline">\(p\)</span>-value of the test is smaller than <code>(1 - threshold)</code>.</li>
+<li>Within each tree:
+<ol style="list-style-type: decimal">
+<li>Gather all the split points for every predictor in <span class="math inline">\(Z\)</span>.</li>
+<li>Discretize the predictors in <span class="math inline">\(Z\)</span> using the gathered split points, and create a partitioning of the predictor space.</li>
+<li>Within each partition, permute the values of predictor <span class="math inline">\(X\)</span>.</li>
+</ol></li>
+</ol>
+</blockquote>
+<div id="some-issues" class="section level3">
+<h3>Some issues</h3>
+<p>There are, however, two important issues with this implementation:</p>
+<ol style="list-style-type: decimal">
+<li>For (some of) the tests in the conditional inference framework, the <span class="math inline">\(p\)</span>-values not only depend on the strength of the (cor)relation, but also on the sample size. For instance, in big samples small correlations can also lead to small <span class="math inline">\(p\)</span>-values.</li>
+<li>(Some of the tests in) the conditional inference framework only test for linear dependence. For instance, for continuous variables a correlation test is used. Of course, dependence between variables is not limited to linear dependence. As a result, when <span class="math inline">\(X\)</span> and <span class="math inline">\(W\)</span> are continuous and have a U-shaped independence structure, <span class="math inline">\(W\)</span> will not be included in <span class="math inline">\(Z\)</span>.</li>
+</ol>
+</div>
+</div>
+<div id="c.-new-implementation-permimp." class="section level2">
+<h2>C. New Implementation (<code>permimp</code>).</h2>
+<p>The new implementation tries to mitigate the two issues raised above, by taking advantage of the fact that within each tree not the original values of the predictors, but only the partitions are important for the prediction of the outcome. That is, one can argue that the tree-based partitioning rather than the original values should be used to decide which <em>other</em> predictors should be included in <span class="math inline">\(Z\)</span>. Applying this rationale, the new implementation can be described as follows:</p>
+<blockquote>
+<p><strong>In every tree</strong>, for every predictor with splits in the tree:</p>
+<ol style="list-style-type: decimal">
+<li><p>Discretize the in-bag values for each predictor using the split points: <span class="math inline">\(X\)</span> =&gt; <span class="math inline">\(X_d\)</span>.</p></li>
+<li><p>For every discretized <span class="math inline">\(X_d\)</span>:</p>
+<ol style="list-style-type: decimal">
+<li>Test which other discretized predictors <span class="math inline">\(W_d\)</span> are related to <span class="math inline">\(X_d\)</span>, applying a <span class="math inline">\(\chi^2\)</span>-independence tests (using only the in-bag values).</li>
+<li>Only include those other predictors <span class="math inline">\(W\)</span> in <span class="math inline">\(Z\)</span> for which the <span class="math inline">\(p\)</span>-value of the test is smaller than <code>(1 - threshold)</code>.</li>
+<li>Create the partitioning of the predictor space using the discretized <span class="math inline">\(Z\)</span>.</li>
+<li>Within each partition, permute the values of predictor <span class="math inline">\(X\)</span>.</li>
+</ol></li>
+</ol>
+</blockquote>
+<div id="important-implications" class="section level3">
+<h3>Important implications</h3>
+<p>The <span class="math inline">\(\chi^2\)</span>-independence test does not (directly) depend on sample size. Therefore, the new implementation is less sensitive to the number of observations. In addition, the <span class="math inline">\(\chi^2\)</span>-independence test is not limited to linear dependence. Hence, the new implementation mitigates the two issue raised above. Because of this, the <code>threshold</code>-value is easier to use and interpret (see below).</p>
+<p>Under the new implementation it is possible that <span class="math inline">\(Z\)</span> differs across trees. Yet this is also the case under the original implementation, since not all predictors in <span class="math inline">\(Z\)</span> are used as splitting variable in each tree. In addition, due to the randomness in random forests (subsampling/bootstrapping and <code>mtry</code> selection), it is very unlikely that there are two trees in the forest with exactly the same splitting points. Therefore, the conditional sampling scheme almost surely differs across trees.</p>
+</div>
+</div>
+<div id="d.-how-to-use-the-threshold." class="section level2">
+<h2>D. How to Use the Threshold.</h2>
+<p>The <code>threshold</code>-value can be interpreted as a tuning parameter to make the permutation more or less conditional. A <code>threshold = 0</code> and a <code>threshold = 1</code> corresponding to permuting as conditional as possible and permuting completely unconditional, respectively. A <code>threshold = .95</code>, the default in <code>permimp</code>, only includes those <span class="math inline">\(W\)</span> in <span class="math inline">\(Z\)</span> for which <span class="math inline">\(W_d\)</span> and <span class="math inline">\(X_d\)</span> are dependent (with <span class="math inline">\(\alpha\)</span>-level = .05).</p>
+<p>Yet threshold values smaller than <code>threshold = .5</code> generally make the selection of the predictors to condition on too greedy, without a meaningful impact on the CPI pattern. Therefore, we recommend using threshold values between .5 and 1.</p>
+<p>Some research questions are best answered with a more marginal importance measure, while other questions are better answered using a more partial importance measure. In many situations, however, it is not clear which measure best fits the research question. Therefore, we argue that in these cases it can be interesting to evaluate the importance (rankings) of the predictors for different <code>threshold</code>-values. This strategy can provide more insight in how the conditioning affects the permutation importance values.</p>
+<p>In the original implementation, setting a sensible <code>threshold</code> proved to be hard, because the practical meaning of the <code>threshold</code> depended on the sample size and on the type of variables (cf. the issues raised above). In the new implementation, the <code>threshold</code>’s interpretation is clearer and more stable. In addition, the simulation studies by <span class="citation">Debeer and Strobl (2020)</span> suggest that the new implementation (a) allows a more gradual shift from unconditional to conditional; and (b) gives more stable importance measure computations.</p>
+<p>As an additional feature, the <code>permimp</code> can provide some diagnostics about the conditional permutation. When <code>thresholdDiagnostics = TRUE</code>, the <code>permimp</code>-function monitors whether or not a conditional permutation scheme was feasible for each predictor <span class="math inline">\(X\)</span> in each tree. This information is translated in messages that suggest to either or decrease the <code>threshold</code>.</p>
+<p>First, it is possible that the conditioning grid is so fine-grained that permuting <span class="math inline">\(X\)</span> conditionally cannot lead to observations ending up in a different end-node of the tree. In other words, the prediction accuracy before and after permuting will be always equal. If this issue occurs in more than 50 percent of the trees that include <span class="math inline">\(X\)</span> as a splitting variable, <code>permimp</code> will produce a note, and suggest to increase the <code>threshold</code>-value. A higher <code>threshold</code>-value may result in a less fine-grained partitioning, making the conditional permutation feasible again.</p>
+<p>Second, it is possible that there are no <span class="math inline">\(W\)</span> in the tree for which the <span class="math inline">\(\chi^2\)</span>-independence test between <span class="math inline">\(W_d\)</span> and <span class="math inline">\(X_d\)</span> is smaller than <code>(1 - threshold)</code>. This implies <span class="math inline">\(Z\)</span> will be an empty set, and conditionally permuting is impossible. That is, without a partitioning/grid, it is equal to unconditionally permuting. If this issue occurs in more than 50 percent of the trees that include <span class="math inline">\(X\)</span> as a splitting variable, <code>permimp</code> will produce a note, and suggest to decrease the <code>threshold</code>-value. A lower <code>threshold</code>-value includes more <span class="math inline">\(W\)</span> in <span class="math inline">\(Z\)</span>, making the conditional permutation feasible again.</p>
+</div>
+</div>
+<div id="references" class="section level1">
+<h1>References</h1>
+<!--
+# References
+\setlength{\parindent}{-0.2in}
+\setlength{\leftskip}{0.2in}
+\setlength{\parskip}{8pt}
+\vspace*{-0.2in}
+\noindent
+-->
+<div id="refs" class="references">
+<div id="ref-Breiman2001">
+<p>Breiman, Leo. 2001. “Random Forests.” <em>Machine Learning</em> 45 (1): 5–32. <a href="https://doi.org/10.1023/a:1010933404324">https://doi.org/10.1023/a:1010933404324</a>.</p>
+</div>
+<div id="ref-Debeer2019">
+<p>Debeer, Dries, and Carolin Strobl. 2020. “Conditional Permuation Importance Revisited.”</p>
+</div>
+<div id="ref-Hothorn2006Lego">
+<p>Hothorn, Torsten, Kurt Hornik, Mark A van de Wiel, and Achim Zeileis. 2006. “A Lego System for Conditional Inference.” <em>The American Statistician</em> 60 (August). <a href="https://doi.org/https://doi.org/10.1198/000313006X118430">https://doi.org/https://doi.org/10.1198/000313006X118430</a>.</p>
+</div>
+<div id="ref-Hothorn2006">
+<p>Hothorn, Torsten, Kurt Hornik, and Achim Zeileis. 2006. “Unbiased Recursive Partitioning: A Conditional Inference Framework.” <em>Journal of Computational and Graphical Statistics</em> 15 (3): 651–74. <a href="https://doi.org/10.1198/106186006x133933">https://doi.org/10.1198/106186006x133933</a>.</p>
+</div>
+<div id="ref-Liaw2002">
+<p>Liaw, Andy, and Matthew Wiener. 2002. “Classification and Regression by randomForest.” <em>R News</em> 2 (3): 18–22. <a href="https://CRAN.R-project.org/doc/Rnews/">https://CRAN.R-project.org/doc/Rnews/</a>.</p>
+</div>
+<div id="ref-Strobl2008">
+<p>Strobl, Carolin, Anne-Laure Boulesteix, Thomas Kneib, Thomas Augustin, and Achim Zeileis. 2008. “Conditional Variable Importance for Random Forests.” <em>BMC Bioinformatics</em> 9 (1): 307. <a href="https://doi.org/10.1186/1471-2105-9-307">https://doi.org/10.1186/1471-2105-9-307</a>.</p>
+</div>
+</div>
+</div>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p><code>progressBar = FALSE</code> was used, because a progress bar is not represented well using R markdown.<a href="#fnref1" class="footnote-back">↩</a></p></li>
+<li id="fn2"><p>This visualization is nicer when the <code>scales</code> package is installed.<a href="#fnref2" class="footnote-back">↩</a></p></li>
+<li id="fn3"><p>Only when <code>interval = &quot;quantile&quot;</code>, which is the default.<a href="#fnref3" class="footnote-back">↩</a></p></li>
+</ol>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
